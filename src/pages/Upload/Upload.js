@@ -54,7 +54,10 @@ const Upload = ({ history }) => {
               {({ getRootProps, getInputProps }) => (
                 <section ref={dropzone}>
                   <div {...getRootProps()}>
-                    <input {...getInputProps()} />
+                    <input
+                      {...getInputProps()}
+                      accept="image/png, image/jpg, image/jpeg, image/webp"
+                    />
                     <div className={styles.info}>
                       <img src={galleryImage} alt="gallery" />
 
@@ -69,7 +72,7 @@ const Upload = ({ history }) => {
         <Grid item md={3}>
           <aside className={styles.sidebarImages}>
             <header>
-              <h3>Advance OCR</h3>
+              <h3>Document Extraction Tool</h3>
             </header>
             <div className={styles.content}>
               <p>Selected Images</p>
@@ -84,16 +87,30 @@ const Upload = ({ history }) => {
                 ))}
               </div>
             </div>
-            <Button
-              variant="text"
-              className={styles.btn}
-              onClick={() => {
-                handleClickPredict(files);
-                history.push("/predict");
-              }}
-            >
-              Predict
-            </Button>
+            <div className={styles.btns}>
+              <Button
+                variant="text"
+                className={styles.btn}
+                onClick={() => {
+                  handleClickPredict(files);
+                  localStorage.setItem("current", "form");
+                  history.push("/predict");
+                }}
+              >
+                Predict Form
+              </Button>
+              <Button
+                variant="text"
+                className={styles.btn}
+                onClick={() => {
+                  handleClickPredict(files);
+                  localStorage.setItem("current", "receipt");
+                  history.push("/predict");
+                }}
+              >
+                Predict Receipt
+              </Button>
+            </div>
           </aside>
         </Grid>
       </Grid>

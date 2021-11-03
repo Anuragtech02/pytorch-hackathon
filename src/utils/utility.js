@@ -53,3 +53,14 @@ export async function compressImage(file) {
     return error;
   }
 }
+
+export const colors = {
+  company: "blue",
+  address: "green",
+  total: "orange",
+  "#other": "rgb(145 145 145)",
+  date: "violet",
+  question: "blue",
+  answer: "green",
+  header: "orange",
+};

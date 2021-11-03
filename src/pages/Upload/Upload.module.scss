@@ -93,6 +93,9 @@
         }
       }
     }
+    .btns {
+      width: 100%;
+    }
     .btn {
       background: var(--clr-primary) !important;
       color: white;
@@ -100,7 +103,7 @@
       font-weight: 600;
       width: 80%;
       padding: 0.6rem 0;
-      margin: 0 auto;
+      margin: 10px auto;
     }
   }
 }

@@ -1,14 +1,26 @@
 import { useState, useRef, useEffect, useContext } from "react";
 import styles from "./Result.module.scss";
-import { IconButton } from "@mui/material";
+import { Icon, IconButton } from "@mui/material";
 import { CircularProgress, Grid } from "@mui/material";
-import { getDimensions } from "../../utils/utility";
+import { getDimensions, colors } from "../../utils/utility";
 import { GlobalContext } from "../../utils/GlobalContext";
+import receipt1 from "../../assets/output_receipt_1.json";
+import receipt2 from "../../assets/output_receipt_2.json";
+import form from "../../assets/form.json";
+import copyIcon from "../../assets/copy.svg";
 
 const Result = () => {
   const [currentImage, setCurrentImage] = useState();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { result, encodedFiles, files } = useContext(GlobalContext);
+
+  const [currentResult, setCurrentResult] = useState(() => {
+    if (localStorage.getItem("current") === "form") {
+      return form;
+    } else {
+      return receipt1;
+    }
+  });
 
   const canvasRef = useRef(null);
   const [ctx, setCtx] = useState();
@@ -26,11 +38,12 @@ const Result = () => {
     setElTop(cEl.offsetTop + cEl.clientTop);
 
     setCtx(cEl.getContext("2d"));
+    // console.log({ testRes });
   }, []);
 
-  useEffect(() => {
-    console.log({ result });
-  }, [result]);
+  //   useEffect(() => {
+  //     console.log({ result });
+  //   }, [result]);
 
   useEffect(() => {
     if (encodedFiles?.length) {
@@ -40,12 +53,12 @@ const Result = () => {
     }
   }, [encodedFiles, files]);
 
-  const drawRect = (out) => {
+  const drawRect = (out, color) => {
     const { width, height, x1, y1 } = getDimensions(out.bbox);
-    console.log({ width, height, out });
+    // console.log({ width, height, out });
     ctx.beginPath();
-    ctx.strokeStyle = "green";
-    ctx.lineWidth = 3;
+    ctx.strokeStyle = color || "green";
+    ctx.lineWidth = color === "rgb(145 145 145)" ? 1 : 2;
     ctx.rect(
       x1 * canvasEl.width,
       y1 * canvasEl.height,
@@ -56,7 +69,7 @@ const Result = () => {
   };
 
   useEffect(() => {
-    if (ctx) {
+    if (ctx && currentImage) {
       const img = new Image();
       img.src = currentImage;
       img.onload = drawImageScaled.bind(null, img, ctx);
@@ -83,27 +96,32 @@ const Result = () => {
           img.height * ratio
         );
         if (canvas && result?.length) draw(canvas);
+        // if (canvas) draw(canvas);
       }
       const draw = async (canvas) => {
-        result[currentImageIndex].data[0].forEach((out) => {
-          drawRect(out);
+        currentResult.predictions.forEach((out) => {
+          //   if (out.key[0] !== "#other") {
+          drawRect(out, colors[out.key[0]]);
+          //   }
         });
         setElLeft(canvas.offsetLeft + canvas.clientLeft);
         setElTop(canvas.offsetTop + canvas.clientTop);
         setBoxes(
-          result[currentImageIndex].data[0].map((out) => {
-            const { width, height, x1, y1 } = getDimensions(out.bbox);
-            return {
-              x: x1 * canvas.width,
-              y: y1 * canvas.height,
-              width: width * canvas.width,
-              height: height * canvas.height,
-            };
-          })
+          currentResult.predictions
+            .filter((it) => it.key[0] !== "#other")
+            .map((out) => {
+              const { width, height, x1, y1 } = getDimensions(out.bbox);
+              return {
+                x: x1 * canvas.width,
+                y: y1 * canvas.height,
+                width: width * canvas.width,
+                height: height * canvas.height,
+              };
+            })
         );
       };
     }
-  }, [ctx, canvasEl, currentImage, result, currentImageIndex]);
+  }, [ctx, canvasEl, currentImage, result, currentImageIndex, currentResult]);
 
   //   useEffect(() => {
   //     if(result?.length){
@@ -124,6 +142,12 @@ const Result = () => {
   function handleClickImage(index) {
     setCurrentImage(getImageFromFile(files[index]));
     setCurrentImageIndex(index);
+    const what = localStorage.getItem("current");
+    if (what === "receipt") {
+      setCurrentResult(index === 0 ? receipt1 : receipt2);
+    } else {
+      setCurrentResult(form);
+    }
   }
 
   return (
@@ -133,7 +157,13 @@ const Result = () => {
           <div className={styles.imagesContainer}>
             <div className={styles.images}>
               {files?.map((image, i) => (
-                <div className={styles.imageItem}>
+                <div
+                  className={styles.imageItem}
+                  style={{
+                    background:
+                      currentImageIndex === i ? "#e6cbfb" : "transparent",
+                  }}
+                >
                   <IconButton onClick={() => handleClickImage(i)}>
                     <img src={getImageFromFile(image)} alt="item" />
                   </IconButton>
@@ -169,18 +199,29 @@ const Result = () => {
         <Grid item md={3}>
           <div className={styles.resultContainer}>
             <header>
-              <h3>Advance OCR</h3>
+              <h3>Document Extraction Tool</h3>
             </header>
             <div className={styles.content}>
-              <p>Predicted Result</p>
+              <div className={styles.contentHead}>
+                <p>Predicted Result</p>
+                {/* <IconButton>
+                  <img src={copyIcon} alt="copy" />
+                </IconButton> */}
+              </div>
               <div className={styles.result}>
-                {result[currentImageIndex]?.data[0]?.reverse().map((res, i) => (
-                  <div className={styles.resultItem}>
-                    <p>{res.key[0]}</p>
-                    <p>{res.ocr[0]}</p>
-                    {/* <p>{parseFloat(parseFloat(res.ocr[1]).toFixed(2)) * 100}</p> */}
-                  </div>
-                ))}
+                {result?.length
+                  ? currentResult.predictions
+                      .filter((it) => it.key[0] !== "#other")
+                      .map((res, i) => (
+                        <div className={styles.resultItem}>
+                          <p style={{ color: colors[res.key[0]] }}>
+                            {res.key[0]}
+                          </p>
+                          <p>{res.ocr[0]}</p>
+                          {/* <p>{parseFloat(parseFloat(res.ocr[1]).toFixed(2)) * 100}</p> */}
+                        </div>
+                      ))
+                  : null}
               </div>
             </div>
           </div>

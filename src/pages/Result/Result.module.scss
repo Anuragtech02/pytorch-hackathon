@@ -16,9 +16,12 @@
       height: 100%;
       border: 2px solid var(--clr-dark);
       border-radius: 5px;
+      overflow: hidden;
+      background: white;
 
       .imageItem {
         position: relative;
+        padding: 0.5rem 0;
         img {
           max-width: 100%;
           border-radius: 5px;
@@ -45,7 +48,7 @@
     @extend .flexRow;
 
     canvas {
-      max-height: 90vh;
+      max-height: 85vh;
       max-width: 100%;
       //   background: grey;
       border-radius: 10px;
@@ -64,9 +67,15 @@
         color: rgba(0, 0, 0, 0.6);
       }
 
+      .contentHead {
+        @extend .flexRow;
+        justify-content: space-between;
+      }
+
       .result {
-        height: 85vh;
+        height: 80vh;
         overflow-y: scroll;
+        margin-top: 1rem;
       }
 
       .resultItem {
@@ -74,6 +83,8 @@
         justify-content: flex-start;
         p {
           margin-left: 10px;
+          text-transform: capitalize;
+          font-weight: 500;
           &:nth-child(1) {
             margin-left: 0;
           }
