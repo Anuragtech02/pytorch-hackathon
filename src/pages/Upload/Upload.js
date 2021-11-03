@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import styles from "./Upload.module.scss";
 import Dropzone from "react-dropzone";
 import Grid from "@mui/material/Grid";
@@ -6,15 +6,20 @@ import galleryImage from "../../assets/gallery.svg";
 import { IconButton } from "@mui/material";
 import closeIcon from "../../assets/close.svg";
 import Button from "@mui/material/Button";
+import { GlobalContext } from "../../utils/GlobalContext";
+import { withRouter } from "react-router";
 
-const Upload = () => {
+const Upload = ({ history }) => {
   const [files, setFiles] = useState([]);
 
   const dropzone = useRef(null);
 
+  const { handleClickPredict, uploadFiles } = useContext(GlobalContext);
+
   function handleDropFiles(acceptedFiles) {
-    console.log(acceptedFiles);
+    // console.log(acceptedFiles);
     setFiles(acceptedFiles);
+    uploadFiles(acceptedFiles);
     if (dropzone.current) {
       dropzone.current.style.backgroundColor = "var(--clr-bg-light)";
     }
@@ -69,8 +74,8 @@ const Upload = () => {
             <div className={styles.content}>
               <p>Selected Images</p>
               <div className={styles.images}>
-                {files.map((file) => (
-                  <div className={styles.image}>
+                {files.map((file, i) => (
+                  <div key={i} className={styles.image}>
                     <img src={getImageFromFile(file)} alt="gallery-item" />
                     <IconButton onClick={() => handleClickDelete(file)}>
                       <img src={closeIcon} alt="close" />
@@ -79,7 +84,14 @@ const Upload = () => {
                 ))}
               </div>
             </div>
-            <Button variant="text" className={styles.btn}>
+            <Button
+              variant="text"
+              className={styles.btn}
+              onClick={() => {
+                handleClickPredict(files);
+                history.push("/predict");
+              }}
+            >
               Predict
             </Button>
           </aside>
@@ -89,7 +101,7 @@ const Upload = () => {
   );
 };
 
-export default Upload;
+export default withRouter(Upload);
 
 function getImageFromFile(file) {
   return URL.createObjectURL(file);

@@ -1,4 +1,6 @@
-export const getDimensions = (coords) => {
+import imageCompression from "browser-image-compression";
+
+export function getDimensions(coords) {
   const x1 = coords[0][0];
   const x2 = coords[1][0];
   const x3 = coords[2][0];
@@ -15,7 +17,7 @@ export const getDimensions = (coords) => {
     x1,
     y1,
   };
-};
+}
 
 export function blobToBase64(blob) {
   return new Promise((resolve, _) => {
@@ -23,4 +25,31 @@ export function blobToBase64(blob) {
     reader.onloadend = () => resolve(reader.result);
     reader.readAsDataURL(blob);
   });
+}
+
+export async function compressImage(file) {
+  const imageFile = file;
+  // console.log("originalFile instanceof Blob", imageFile instanceof Blob); // true
+  // console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`);
+
+  const options = {
+    maxSizeMB: 1,
+    maxWidthOrHeight: 1920,
+    useWebWorker: true,
+  };
+  try {
+    return await imageCompression(imageFile, options);
+    //   console.log(
+    //     "compressedFile instanceof Blob",
+    //     compressedFile instanceof Blob
+    //   ); // true
+    //   console.log(
+    //     `compressedFile size ${compressedFile.size / 1024 / 1024} MB`
+    //   ); // smaller than maxSizeMB
+
+    // await uploadToServer(compressedFile); // write your own logic
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
 }

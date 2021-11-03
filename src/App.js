@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import styles from "./App.module.scss";
 import Upload from "./pages/Upload/Upload";
+import Result from "./pages/Result/Result";
 import GlobalContextProvider from "./utils/GlobalContext";
 
 const App = () => {
@@ -10,7 +11,8 @@ const App = () => {
       <div className={styles.container}>
         <Router>
           <Switch>
-            <Route path="/" component={Upload} />
+            <Route exact path="/" component={Upload} />
+            <Route exact path="/predict" component={Result} />
           </Switch>
         </Router>
       </div>
