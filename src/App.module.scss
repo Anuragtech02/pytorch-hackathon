@@ -1,0 +1,22 @@
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+:root {
+  --clr-primary: #c186f0;
+  --clr-bg-light: #fcf9ff;
+
+  --container-width: 90vw;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+}
+
+.container {
+  background: var(--clr-bg-light);
+  min-height: 100vh;
+}

@@ -1,0 +1,106 @@
+@import "../../utils/common.scss";
+
+.container {
+  margin: auto;
+  height: 100vh;
+  @extend .flexRow;
+  justify-content: center;
+
+  .uploadContainer {
+    width: 100%;
+    margin: auto;
+    height: 100vh;
+    @extend .flexRow;
+
+    section {
+      width: 90% !important;
+      margin: 0 auto;
+      height: 90%;
+      border: 3px dotted var(--clr-primary);
+      border-spacing: 10rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.2s ease-in-out;
+      transition-property: background-color;
+
+      > div {
+        width: 100%;
+        height: 100%;
+        @extend .flexRow;
+        justify-content: center;
+      }
+
+      .info {
+        @extend .flexCol;
+        color: var(--clr-primary);
+        p {
+          margin-top: 1rem;
+        }
+      }
+    }
+  }
+
+  .sidebarImages {
+    width: 100%;
+    height: 100%;
+    background: white;
+    padding: 10%;
+    @extend .flexCol;
+    align-items: flex-start;
+
+    header {
+      h3 {
+        font-size: 1.2rem;
+        font-weight: 500;
+      }
+    }
+    .content {
+      margin-top: 1.5rem;
+      flex: 1;
+      p {
+        color: rgba(0, 0, 0, 0.6);
+      }
+
+      .images {
+        @extend .flexRow;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1rem;
+        .image {
+          width: 80px;
+          height: 80px;
+          position: relative;
+          //   margin: 10px 0;
+          //   margin-left: 10px;
+
+          //   &:first-child {
+          //     margin-left: 0;
+          //   }
+          > img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+
+            border-radius: 5px;
+            border: 2px solid black;
+          }
+        }
+        button {
+          position: absolute;
+          top: 3px;
+          right: 3px;
+        }
+      }
+    }
+    .btn {
+      background: var(--clr-primary) !important;
+      color: white;
+      text-transform: capitalize;
+      font-weight: 600;
+      width: 80%;
+      padding: 0.6rem 0;
+      margin: 0 auto;
+    }
+  }
+}
