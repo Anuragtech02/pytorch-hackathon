@@ -41,9 +41,9 @@ const Result = () => {
     // console.log({ testRes });
   }, []);
 
-  //   useEffect(() => {
-  //     console.log({ result });
-  //   }, [result]);
+  useEffect(() => {
+    console.log({ result });
+  }, [result]);
 
   useEffect(() => {
     if (encodedFiles?.length) {
