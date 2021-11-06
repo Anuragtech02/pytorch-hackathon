@@ -17,10 +17,11 @@ const GlobalContextProvider = ({ children }) => {
   }
 
   async function getResult(b64File) {
-    return await axios("http://localhost:8010/proxy/ocr-deploy", {
+    return await axios("http://164.52.218.27:7080/wfpredict/ocr", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        charset: "utf-8",
       },
       data: {
         data: b64File.split(",")[1],
