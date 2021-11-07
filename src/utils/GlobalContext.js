@@ -17,7 +17,7 @@ const GlobalContextProvider = ({ children }) => {
   }
 
   async function getResult(b64File) {
-    return await axios("http://164.52.218.27:7080/wfpredict/ocr", {
+    return await axios("http://49.37.73.131/wfpredict/ocr", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
