@@ -17,13 +17,15 @@
       border: 2px solid var(--clr-dark);
       border-radius: 5px;
       overflow: hidden;
+      overflow-y: auto;
       background: white;
 
       .imageItem {
         position: relative;
-        padding: 0.5rem 0;
+        padding: 1rem;
         img {
           max-width: 100%;
+          min-width: 80px;
           border-radius: 5px;
         }
         .progress {

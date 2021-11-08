@@ -35,8 +35,8 @@ const Upload = ({ history }) => {
   const { handleClickPredict, uploadFiles } = useContext(GlobalContext);
 
   function handleDropFiles(acceptedFiles) {
-    setFiles(acceptedFiles);
-    uploadFiles(acceptedFiles);
+    setFiles(acceptedFiles?.slice(0, 5));
+    uploadFiles(acceptedFiles?.slice(0, 5));
     if (dropzone.current) {
       dropzone.current.style.backgroundColor = "var(--clr-bg-light)";
     }
