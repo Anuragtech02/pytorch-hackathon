@@ -3,14 +3,32 @@ import styles from "./Upload.module.scss";
 import Dropzone from "react-dropzone";
 import Grid from "@mui/material/Grid";
 import galleryImage from "../../assets/gallery.svg";
-import { IconButton } from "@mui/material";
+import { IconButton, Modal } from "@mui/material";
 import closeIcon from "../../assets/close.svg";
 import Button from "@mui/material/Button";
 import { GlobalContext } from "../../utils/GlobalContext";
 import { withRouter } from "react-router";
+import clsx from "clsx";
+import receiptImage from "../../assets/receipt_1.jpg";
+import formImage from "../../assets/form.png";
 
 const Upload = ({ history }) => {
   const [files, setFiles] = useState([]);
+  const [sampleOpen, setSampleOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(1);
+
+  const options = [
+    {
+      id: 1,
+      name: "Receipt",
+      image: receiptImage,
+    },
+    {
+      id: 2,
+      name: "Form",
+      image: formImage,
+    },
+  ];
 
   const dropzone = useRef(null);
 
@@ -56,6 +74,14 @@ const Upload = ({ history }) => {
     }
     handleClickPredict(files);
     history.push("/predict");
+  }
+
+  function handleClickUseSample() {
+    setSampleOpen(true);
+  }
+
+  function handleClickSampleOption(n) {
+    setSelectedOption(n);
   }
 
   return (
@@ -106,6 +132,13 @@ const Upload = ({ history }) => {
             </div>
             <div className={styles.btns}>
               <Button
+                variant="outlined"
+                className={clsx(styles.btn, styles.outlined)}
+                onClick={handleClickUseSample}
+              >
+                Use Sample
+              </Button>
+              <Button
                 variant="text"
                 className={styles.btn}
                 onClick={handleClickPredictForm}
@@ -119,10 +152,50 @@ const Upload = ({ history }) => {
               >
                 Predict Receipt
               </Button>
+              <p style={{ color: "rgba(0,0,0,0.4)" }}>
+                * Only 5 images are allowed at a time
+              </p>
             </div>
           </aside>
         </Grid>
       </Grid>
+      <Modal open={sampleOpen} onClose={() => setSampleOpen(false)}>
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <h4>Select Sample</h4>
+            <div className={styles.options}>
+              {options.map((option) => (
+                <div
+                  className={styles.option}
+                  onClick={() => handleClickSampleOption(option.id)}
+                >
+                  <img
+                    src={option.image}
+                    alt="sample-receipt"
+                    className={
+                      selectedOption === option.id ? styles.selected : ""
+                    }
+                  />
+                  <p
+                    className={
+                      selectedOption === option.id ? styles.selectedText : ""
+                    }
+                  >
+                    {option.name}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <Button
+              variant="text"
+              className={styles.btn}
+              onClick={handleClickPredictReceipt}
+            >
+              Continue
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

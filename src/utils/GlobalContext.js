@@ -16,20 +16,37 @@ const GlobalContextProvider = ({ children }) => {
     setEncodedFiles(convertedFiles);
   }
 
+  // async function getResult(b64File) {
+  //   const headers = {
+  //     // Accept: "application/json",
+  //     "Content-Type": "multipart/form-data",
+  //     // "Content-Security-Policy": "upgrade-insecure-requests",
+  //   };
+  //   const formData = new FormData();
+  //   const file = dataURLtoFile(b64File);
+  //   formData.append("data", file, file.name);
+  //   return await axios.post(
+  //     // "http://164.52.218.27:7080/wfpredict/ocr",
+  //     "http://localhost:5000/predict",
+  //     formData,
+  //     {
+  //       headers,
+  //     }
+  //   );
+  // }
+
   async function getResult(b64File) {
-    const headers = {
-      // Accept: "application/json",
-      "Content-Type": "multipart/form-data",
-      // "Content-Security-Policy": "upgrade-insecure-requests",
-    };
-    const formData = new FormData();
-    const file = dataURLtoFile(b64File);
-    formData.append("data", file, file.name);
-    return await axios.post(
-      "http://164.52.218.27:7080/wfpredict/ocr",
-      formData,
+    return await axios(
+      "https://document-extraction-middleware.herokuapp.com/predict",
       {
-        headers,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          charset: "utf-8",
+        },
+        data: {
+          data: b64File,
+        },
       }
     );
   }

@@ -5,6 +5,7 @@ import { CircularProgress, Grid } from "@mui/material";
 import { getDimensions, colors } from "../../utils/utility";
 import { GlobalContext } from "../../utils/GlobalContext";
 import { withRouter } from "react-router";
+import axios from "axios";
 
 const Result = ({ history }) => {
   const [currentImage, setCurrentImage] = useState();
@@ -29,9 +30,9 @@ const Result = ({ history }) => {
     setCtx(cEl.getContext("2d"));
   }, []);
 
-  // useEffect(() => {
-  //   console.log({ result });
-  // }, [result]);
+  useEffect(() => {
+    console.log({ result });
+  }, [result]);
 
   useEffect(() => {
     if (encodedFiles?.length) {
@@ -39,6 +40,19 @@ const Result = ({ history }) => {
       setCurrentImage(getImageFromFile(files[0]));
       setCurrentImageIndex(0);
     }
+    // const getSomething = async () => {
+    //   return await axios.get(
+    //     "http://localhost:5000/predict",
+    //     {
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //     }
+    //   );
+    // };
+    // getSomething().then((res) => {
+    //   console.log({ res });
+    // });
   }, [encodedFiles, files]);
 
   useEffect(() => {
@@ -86,7 +100,7 @@ const Result = ({ history }) => {
         // if (canvas) draw(canvas);
       }
       const draw = async (canvas) => {
-        result[0]?.data?.predictions?.forEach((out) => {
+        result[currentImageIndex]?.data?.predictions?.forEach((out) => {
           //   if (out.key[0] !== "#other") {
           drawRect(out, colors[out.key]);
           //   }
@@ -94,8 +108,8 @@ const Result = ({ history }) => {
         setElLeft(canvas.offsetLeft + canvas.clientLeft);
         setElTop(canvas.offsetTop + canvas.clientTop);
         setBoxes(
-          result[0]?.data?.predictions
-            ?.filter((it) => it.key[0] !== "#other")
+          result[currentImageIndex]?.data?.predictions
+            ?.filter((it) => it.key !== "#other")
             .map((out) => {
               const { width, height, x1, y1 } = getDimensions(out.bbox);
               return {
@@ -188,7 +202,7 @@ const Result = ({ history }) => {
               </div>
               <div className={styles.result}>
                 {result?.length
-                  ? result[0]?.data?.predictions
+                  ? result[currentImageIndex]?.data?.predictions
                       .filter((it) => it.key !== "#other")
                       .map((res, i) => (
                         <div key={res.ocr + i} className={styles.resultItem}>
