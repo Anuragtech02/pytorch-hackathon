@@ -4,12 +4,19 @@ import { compressImage, blobToBase64, dataURLtoFile } from "./utility";
 
 export const GlobalContext = createContext({});
 
+const API_RECEIPT =
+  "https://document-extraction-middleware.herokuapp.com/predictReceipt";
+const API_FORM =
+  "https://document-extraction-middleware.herokuapp.com/predictForm";
+
 const GlobalContextProvider = ({ children }) => {
   const [files, setFiles] = useState([]);
   const [encodedFiles, setEncodedFiles] = useState([]);
   const [result, setResult] = useState([]);
+  const [what, setWhat] = useState("");
 
-  async function handleClickPredict(files = []) {
+  async function handleClickPredict(files = [], type) {
+    setWhat(type);
     const compressedFiles = await Promise.all(files.map(compressImage));
     const convertedFiles = await Promise.all(compressedFiles.map(blobToBase64));
 
@@ -36,9 +43,8 @@ const GlobalContextProvider = ({ children }) => {
   // }
 
   async function getResult(b64File) {
-    return await axios(
-      "https://document-extraction-middleware.herokuapp.com/predict",
-      {
+    if (what === "receipt") {
+      return await axios(API_RECEIPT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -47,8 +53,18 @@ const GlobalContextProvider = ({ children }) => {
         data: {
           data: b64File,
         },
-      }
-    );
+      });
+    }
+    return await axios(API_FORM, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        charset: "utf-8",
+      },
+      data: {
+        data: b64File,
+      },
+    });
   }
 
   useEffect(() => {

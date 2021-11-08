@@ -144,7 +144,7 @@ const Result = ({ history }) => {
   return (
     <div className={styles.container}>
       <Grid container spacing={0} style={{ height: "100%" }}>
-        <Grid item md={1}>
+        <Grid item xl={1} lg={2} md={3} sm={3}>
           <div className={styles.imagesContainer}>
             <div className={styles.images}>
               {files?.map((image, i) => (
@@ -169,7 +169,7 @@ const Result = ({ history }) => {
             </div>
           </div>
         </Grid>
-        <Grid item md={8}>
+        <Grid item xl={8} lg={7} md={6} sm={6}>
           <div className={styles.canvasContainer}>
             <canvas
               ref={canvasRef}
@@ -188,7 +188,7 @@ const Result = ({ history }) => {
             ></canvas>
           </div>
         </Grid>
-        <Grid item md={3}>
+        <Grid item xl={3} lg={3} md={4} sm={4}>
           <div className={styles.resultContainer}>
             <header>
               <h3>Document Extraction Tool</h3>

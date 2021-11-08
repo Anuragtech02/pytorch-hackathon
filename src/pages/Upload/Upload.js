@@ -35,6 +35,7 @@ const Upload = ({ history }) => {
   const { handleClickPredict, uploadFiles } = useContext(GlobalContext);
 
   function handleDropFiles(acceptedFiles) {
+    console.log({ acceptedFiles });
     setFiles(acceptedFiles?.slice(0, 5));
     uploadFiles(acceptedFiles?.slice(0, 5));
     if (dropzone.current) {
@@ -63,7 +64,7 @@ const Upload = ({ history }) => {
       alert("Please upload at least one image");
       return;
     }
-    handleClickPredict(files);
+    handleClickPredict(files, "form");
     history.push("/predict");
   }
 
@@ -72,7 +73,7 @@ const Upload = ({ history }) => {
       alert("Please upload at least one image");
       return;
     }
-    handleClickPredict(files);
+    handleClickPredict(files, "receipt");
     history.push("/predict");
   }
 
@@ -82,6 +83,46 @@ const Upload = ({ history }) => {
 
   function handleClickSampleOption(n) {
     setSelectedOption(n);
+  }
+
+  function imageToFile(image, props) {
+    return new File([image], props.name, {
+      type: props.type,
+    });
+  }
+
+  function handleClickContinue() {
+    const a = document.createElement("a");
+    if (selectedOption === 1) {
+      // const img = new Image();
+      // img.src = receiptImage;
+      // img.onload = () => {
+      //   let fil = imageToFile(img, {
+      //     name: "receipt_1.jpg",
+      //     type: "image/jpg",
+      //   });
+      //   console.log({ fil });
+      //   handleDropFiles([fil]);
+      // };
+      // handleClickPredictReceipt();
+      // a.href="";
+      a.href =
+        "https://t3638486.p.clickup-attachments.com/t3638486/152453a1-fed4-4760-87d9-68d356c68555/X00016469676.jpg";
+      a.click();
+    } else {
+      // const img = new Image();
+      // img.src = formImage;
+      // img.onload = () => {
+      //   handleDropFiles([
+      //     imageToFile(img, { name: "form.png", type: "image/png" }),
+      //   ]);
+      // };
+      // handleClickPredictForm();
+      // a.href="";
+      a.href =
+        "https://t3638486.p.clickup-attachments.com/t3638486/b644db6d-a329-4d56-b2b9-e9cebf855d71/00040534.png";
+      a.click();
+    }
   }
 
   return (
@@ -136,7 +177,7 @@ const Upload = ({ history }) => {
                 className={clsx(styles.btn, styles.outlined)}
                 onClick={handleClickUseSample}
               >
-                Use Sample
+                Download Sample
               </Button>
               <Button
                 variant="text"
@@ -189,7 +230,7 @@ const Upload = ({ history }) => {
             <Button
               variant="text"
               className={styles.btn}
-              onClick={handleClickPredictReceipt}
+              onClick={handleClickContinue}
             >
               Continue
             </Button>
