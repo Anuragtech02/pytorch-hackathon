@@ -1,26 +1,15 @@
 import { useState, useRef, useEffect, useContext } from "react";
 import styles from "./Result.module.scss";
-import { Icon, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { CircularProgress, Grid } from "@mui/material";
 import { getDimensions, colors } from "../../utils/utility";
 import { GlobalContext } from "../../utils/GlobalContext";
-import receipt1 from "../../assets/output_receipt_1.json";
-import receipt2 from "../../assets/output_receipt_2.json";
-import form from "../../assets/form.json";
-import copyIcon from "../../assets/copy.svg";
+import { withRouter } from "react-router";
 
-const Result = () => {
+const Result = ({ history }) => {
   const [currentImage, setCurrentImage] = useState();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { result, encodedFiles, files } = useContext(GlobalContext);
-
-  const [currentResult, setCurrentResult] = useState(() => {
-    if (localStorage.getItem("current") === "form") {
-      return form;
-    } else {
-      return receipt1;
-    }
-  });
 
   const canvasRef = useRef(null);
   const [ctx, setCtx] = useState();
@@ -38,12 +27,11 @@ const Result = () => {
     setElTop(cEl.offsetTop + cEl.clientTop);
 
     setCtx(cEl.getContext("2d"));
-    // console.log({ testRes });
   }, []);
 
-  useEffect(() => {
-    console.log({ result });
-  }, [result]);
+  // useEffect(() => {
+  //   console.log({ result });
+  // }, [result]);
 
   useEffect(() => {
     if (encodedFiles?.length) {
@@ -53,22 +41,21 @@ const Result = () => {
     }
   }, [encodedFiles, files]);
 
-  const drawRect = (out, color) => {
-    const { width, height, x1, y1 } = getDimensions(out.bbox);
-    // console.log({ width, height, out });
-    ctx.beginPath();
-    ctx.strokeStyle = color || "green";
-    ctx.lineWidth = color === "rgb(145 145 145)" ? 1 : 2;
-    ctx.rect(
-      x1 * canvasEl.width,
-      y1 * canvasEl.height,
-      width * canvasEl.width,
-      height * canvasEl.height
-    );
-    ctx.stroke();
-  };
-
   useEffect(() => {
+    const drawRect = (out, color) => {
+      const { width, height, x1, y1 } = getDimensions(out.bbox);
+      ctx.beginPath();
+      ctx.strokeStyle = color || "green";
+      ctx.lineWidth = color === "rgb(145 145 145)" ? 2 : 3;
+      ctx.rect(
+        x1 * canvasEl.width,
+        y1 * canvasEl.height,
+        width * canvasEl.width,
+        height * canvasEl.height
+      );
+      ctx.stroke();
+    };
+
     if (ctx && currentImage) {
       const img = new Image();
       img.src = currentImage;
@@ -99,16 +86,16 @@ const Result = () => {
         // if (canvas) draw(canvas);
       }
       const draw = async (canvas) => {
-        currentResult.predictions.forEach((out) => {
+        result[0]?.data?.predictions?.forEach((out) => {
           //   if (out.key[0] !== "#other") {
-          drawRect(out, colors[out.key[0]]);
+          drawRect(out, colors[out.key]);
           //   }
         });
         setElLeft(canvas.offsetLeft + canvas.clientLeft);
         setElTop(canvas.offsetTop + canvas.clientTop);
         setBoxes(
-          currentResult.predictions
-            .filter((it) => it.key[0] !== "#other")
+          result[0]?.data?.predictions
+            ?.filter((it) => it.key[0] !== "#other")
             .map((out) => {
               const { width, height, x1, y1 } = getDimensions(out.bbox);
               return {
@@ -121,33 +108,23 @@ const Result = () => {
         );
       };
     }
-  }, [ctx, canvasEl, currentImage, result, currentImageIndex, currentResult]);
+  }, [ctx, canvasEl, currentImage, result, currentImageIndex]);
 
-  //   useEffect(() => {
-  //     if(result?.length){
-  //       setBoxes(
-  //             result.data[0].map((out) => {
-  //               const { width, height, x1, y1 } = getDimensions(out.bbox);
-  //               return {
-  //                 x: x1 * canvas.width,
-  //                 y: y1 * canvas.height,
-  //                 width: width * canvas.width,
-  //                 height: height * canvas.height,
-  //               };
-  //             })
-  //           );
-  //     }
-  //   }, [result]);
+  useEffect(() => {
+    if (!files.length) {
+      history.push("/");
+    }
+  }, [files, history]);
 
   function handleClickImage(index) {
     setCurrentImage(getImageFromFile(files[index]));
     setCurrentImageIndex(index);
-    const what = localStorage.getItem("current");
-    if (what === "receipt") {
-      setCurrentResult(index === 0 ? receipt1 : receipt2);
-    } else {
-      setCurrentResult(form);
-    }
+    // const what = localStorage.getItem("current");
+    // if (what === "receipt") {
+    //   setCurrentResult(index === 0 ? receipt1 : receipt2);
+    // } else {
+    //   setCurrentResult(form);
+    // }
   }
 
   return (
@@ -158,6 +135,7 @@ const Result = () => {
             <div className={styles.images}>
               {files?.map((image, i) => (
                 <div
+                  key={i}
                   className={styles.imageItem}
                   style={{
                     background:
@@ -210,15 +188,12 @@ const Result = () => {
               </div>
               <div className={styles.result}>
                 {result?.length
-                  ? currentResult.predictions
-                      .filter((it) => it.key[0] !== "#other")
+                  ? result[0]?.data?.predictions
+                      .filter((it) => it.key !== "#other")
                       .map((res, i) => (
-                        <div className={styles.resultItem}>
-                          <p style={{ color: colors[res.key[0]] }}>
-                            {res.key[0]}
-                          </p>
-                          <p>{res.ocr[0]}</p>
-                          {/* <p>{parseFloat(parseFloat(res.ocr[1]).toFixed(2)) * 100}</p> */}
+                        <div key={res.ocr + i} className={styles.resultItem}>
+                          <p style={{ color: colors[res.key] }}>{res.key}</p>
+                          <p>{res.ocr}</p>
                         </div>
                       ))
                   : null}
@@ -231,7 +206,7 @@ const Result = () => {
   );
 };
 
-export default Result;
+export default withRouter(Result);
 
 function getImageFromFile(file) {
   return URL.createObjectURL(file);

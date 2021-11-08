@@ -1,15 +1,11 @@
 import imageCompression from "browser-image-compression";
 
 export function getDimensions(coords) {
-  const x1 = coords[0][0];
-  const x2 = coords[1][0];
-  const x3 = coords[2][0];
-  const x4 = coords[3][0];
+  const x1 = coords[0];
+  const x3 = coords[2];
 
-  const y1 = coords[0][1];
-  const y2 = coords[1][1];
-  const y3 = coords[2][1];
-  const y4 = coords[3][1];
+  const y1 = coords[1];
+  const y3 = coords[3];
 
   return {
     width: Math.abs(x3 - x1),
@@ -29,30 +25,32 @@ export function blobToBase64(blob) {
 
 export async function compressImage(file) {
   const imageFile = file;
-  // console.log("originalFile instanceof Blob", imageFile instanceof Blob); // true
-  // console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`);
 
   const options = {
-    maxSizeMB: 1,
+    maxSizeMB: 2,
     maxWidthOrHeight: 1920,
     useWebWorker: true,
   };
   try {
     return await imageCompression(imageFile, options);
-    //   console.log(
-    //     "compressedFile instanceof Blob",
-    //     compressedFile instanceof Blob
-    //   ); // true
-    //   console.log(
-    //     `compressedFile size ${compressedFile.size / 1024 / 1024} MB`
-    //   ); // smaller than maxSizeMB
-
-    // await uploadToServer(compressedFile); // write your own logic
   } catch (error) {
     console.log(error);
     return error;
   }
 }
+
+export const dataURLtoFile = (dataurl, filename) => {
+  const arr = dataurl.split(",");
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n) {
+    u8arr[n - 1] = bstr.charCodeAt(n - 1);
+    n -= 1; // to make eslint happy
+  }
+  return new File([u8arr], filename, { type: mime });
+};
 
 export const colors = {
   company: "blue",

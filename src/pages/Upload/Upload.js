@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useRef, useContext } from "react";
 import styles from "./Upload.module.scss";
 import Dropzone from "react-dropzone";
 import Grid from "@mui/material/Grid";
@@ -17,7 +17,6 @@ const Upload = ({ history }) => {
   const { handleClickPredict, uploadFiles } = useContext(GlobalContext);
 
   function handleDropFiles(acceptedFiles) {
-    // console.log(acceptedFiles);
     setFiles(acceptedFiles);
     uploadFiles(acceptedFiles);
     if (dropzone.current) {
@@ -39,6 +38,24 @@ const Upload = ({ history }) => {
 
   function handleClickDelete(file) {
     setFiles(files.filter((f) => f !== file));
+  }
+
+  function handleClickPredictForm() {
+    if (!files?.length) {
+      alert("Please upload at least one image");
+      return;
+    }
+    handleClickPredict(files);
+    history.push("/predict");
+  }
+
+  function handleClickPredictReceipt() {
+    if (!files?.length) {
+      alert("Please upload at least one image");
+      return;
+    }
+    handleClickPredict(files);
+    history.push("/predict");
   }
 
   return (
@@ -91,22 +108,14 @@ const Upload = ({ history }) => {
               <Button
                 variant="text"
                 className={styles.btn}
-                onClick={() => {
-                  handleClickPredict(files);
-                  localStorage.setItem("current", "form");
-                  history.push("/predict");
-                }}
+                onClick={handleClickPredictForm}
               >
                 Predict Form
               </Button>
               <Button
                 variant="text"
                 className={styles.btn}
-                onClick={() => {
-                  handleClickPredict(files);
-                  localStorage.setItem("current", "receipt");
-                  history.push("/predict");
-                }}
+                onClick={handleClickPredictReceipt}
               >
                 Predict Receipt
               </Button>
