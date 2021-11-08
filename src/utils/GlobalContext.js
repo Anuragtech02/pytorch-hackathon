@@ -10,23 +10,45 @@ const GlobalContextProvider = ({ children }) => {
   const [result, setResult] = useState([]);
 
   async function handleClickPredict(files = []) {
-    const cFiles = await Promise.all(files.map(compressImage));
-    const convertedFiles = await Promise.all(cFiles.map(blobToBase64));
+    // const cFiles = await Promise.all(files.map(compressImage));
+    const convertedFiles = await Promise.all(files.map(blobToBase64));
 
     setEncodedFiles(convertedFiles);
   }
 
+  // async function getResult(b64File) {
+  //   return await axios({
+  //     method: "POST",
+  //     url: "http://localhost:8080/wfpredict/ocr",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(b64File.split(",")[1]),
+  //   });
+  // }
+
+  const dataURLtoFile = (dataurl, filename) => {
+    const arr = dataurl.split(',')
+    const mime = arr[0].match(/:(.*?);/)[1]
+    const bstr = atob(arr[1])
+    let n = bstr.length
+    const u8arr = new Uint8Array(n)
+    while (n) {
+      u8arr[n - 1] = bstr.charCodeAt(n - 1)
+      n -= 1 // to make eslint happy
+    }
+    return new File([u8arr], filename, { type: mime })
+  }
+
   async function getResult(b64File) {
-    return await axios("http://49.37.73.131/wfpredict/ocr", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        charset: "utf-8",
-      },
-      data: {
-        data: b64File.split(",")[1],
-      },
-    });
+    const headers = {
+      // Accept: "application/json",
+      "Content-Type": "multipart/form-data"
+    }
+    const data= new FormData()
+    const file= dataURLtoFile(b64File)
+    data.append('data',file,file.name)
+    return await axios.post("http://164.52.218.27:7080/wfpredict/ocr",data, {headers});
   }
 
   useEffect(() => {
