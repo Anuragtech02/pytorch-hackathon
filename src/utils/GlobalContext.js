@@ -16,6 +16,10 @@ const GlobalContextProvider = ({ children }) => {
   const [what, setWhat] = useState("");
 
   async function handleClickPredict(files = [], type) {
+    if (files.length === 0) {
+      setEncodedFiles([]);
+      return;
+    }
     setWhat(type);
     const compressedFiles = await Promise.all(files.map(compressImage));
     const convertedFiles = await Promise.all(compressedFiles.map(blobToBase64));
@@ -43,19 +47,7 @@ const GlobalContextProvider = ({ children }) => {
   // }
 
   async function getResult(b64File) {
-    if (what === "receipt") {
-      return await axios(API_RECEIPT, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          charset: "utf-8",
-        },
-        data: {
-          data: b64File,
-        },
-      });
-    }
-    return await axios(API_FORM, {
+    return await axios(what === "receipt" ? API_RECEIPT : API_FORM, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -66,6 +58,12 @@ const GlobalContextProvider = ({ children }) => {
       },
     });
   }
+
+  useEffect(() => {
+    if (!files?.length) {
+      setEncodedFiles([]);
+    }
+  }, [files]);
 
   useEffect(() => {
     async function getResults() {

@@ -30,9 +30,9 @@ const Result = ({ history }) => {
     setCtx(cEl.getContext("2d"));
   }, []);
 
-  useEffect(() => {
-    console.log({ result });
-  }, [result]);
+  // useEffect(() => {
+  //   console.log({ result });
+  // }, [result]);
 
   useEffect(() => {
     if (encodedFiles?.length) {
@@ -102,14 +102,14 @@ const Result = ({ history }) => {
       const draw = async (canvas) => {
         result[currentImageIndex]?.data?.predictions?.forEach((out) => {
           //   if (out.key[0] !== "#other") {
-          drawRect(out, colors[out.key]);
+          drawRect(out, colors[out.key?.toLowerCase()]);
           //   }
         });
         setElLeft(canvas.offsetLeft + canvas.clientLeft);
         setElTop(canvas.offsetTop + canvas.clientTop);
         setBoxes(
           result[currentImageIndex]?.data?.predictions
-            ?.filter((it) => it.key !== "#other")
+            ?.filter((it) => it.key?.toLowerCase() !== "#other")
             .map((out) => {
               const { width, height, x1, y1 } = getDimensions(out.bbox);
               return {
@@ -203,10 +203,12 @@ const Result = ({ history }) => {
               <div className={styles.result}>
                 {result?.length
                   ? result[currentImageIndex]?.data?.predictions
-                      .filter((it) => it.key !== "#other")
+                      .filter((it) => it.key?.toLowerCase() !== "#other")
                       .map((res, i) => (
                         <div key={res.ocr + i} className={styles.resultItem}>
-                          <p style={{ color: colors[res.key] }}>{res.key}</p>
+                          <p style={{ color: colors[res.key?.toLowerCase()] }}>
+                            {res.key}
+                          </p>
                           <p>{res.ocr}</p>
                         </div>
                       ))

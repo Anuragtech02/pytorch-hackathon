@@ -1,4 +1,4 @@
-import { useState, useRef, useContext } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import styles from "./Upload.module.scss";
 import Dropzone from "react-dropzone";
 import Grid from "@mui/material/Grid";
@@ -33,6 +33,11 @@ const Upload = ({ history }) => {
   const dropzone = useRef(null);
 
   const { handleClickPredict, uploadFiles } = useContext(GlobalContext);
+
+  useEffect(() => {
+    setFiles([]);
+    uploadFiles([]);
+  }, [uploadFiles]);
 
   function handleDropFiles(acceptedFiles) {
     console.log({ acceptedFiles });
