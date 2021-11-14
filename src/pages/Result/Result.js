@@ -5,7 +5,6 @@ import { CircularProgress, Grid } from "@mui/material";
 import { getDimensions, colors } from "../../utils/utility";
 import { GlobalContext } from "../../utils/GlobalContext";
 import { withRouter } from "react-router";
-import axios from "axios";
 
 const Result = ({ history }) => {
   const [currentImage, setCurrentImage] = useState();

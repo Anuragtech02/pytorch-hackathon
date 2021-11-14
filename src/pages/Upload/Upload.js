@@ -90,40 +90,13 @@ const Upload = ({ history }) => {
     setSelectedOption(n);
   }
 
-  function imageToFile(image, props) {
-    return new File([image], props.name, {
-      type: props.type,
-    });
-  }
-
   function handleClickContinue() {
     const a = document.createElement("a");
     if (selectedOption === 1) {
-      // const img = new Image();
-      // img.src = receiptImage;
-      // img.onload = () => {
-      //   let fil = imageToFile(img, {
-      //     name: "receipt_1.jpg",
-      //     type: "image/jpg",
-      //   });
-      //   console.log({ fil });
-      //   handleDropFiles([fil]);
-      // };
-      // handleClickPredictReceipt();
-      // a.href="";
       a.href =
         "https://t3638486.p.clickup-attachments.com/t3638486/152453a1-fed4-4760-87d9-68d356c68555/X00016469676.jpg";
       a.click();
     } else {
-      // const img = new Image();
-      // img.src = formImage;
-      // img.onload = () => {
-      //   handleDropFiles([
-      //     imageToFile(img, { name: "form.png", type: "image/png" }),
-      //   ]);
-      // };
-      // handleClickPredictForm();
-      // a.href="";
       a.href =
         "https://t3638486.p.clickup-attachments.com/t3638486/b644db6d-a329-4d56-b2b9-e9cebf855d71/00040534.png";
       a.click();
@@ -212,6 +185,7 @@ const Upload = ({ history }) => {
             <div className={styles.options}>
               {options.map((option) => (
                 <div
+                  key={option.id}
                   className={styles.option}
                   onClick={() => handleClickSampleOption(option.id)}
                 >
@@ -243,11 +217,7 @@ const Upload = ({ history }) => {
               onClick={() => setSampleOpen(false)}
               className={styles.close}
             >
-              <img
-                src={closeIcon}
-                alt="close"
-                onClick={() => setSampleOpen(false)}
-              />
+              <img src={closeIcon} alt="close" />
             </IconButton>
           </div>
         </div>

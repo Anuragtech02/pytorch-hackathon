@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
-import { compressImage, blobToBase64, dataURLtoFile } from "./utility";
+import { compressImage, blobToBase64 } from "./utility";
 
 export const GlobalContext = createContext({});
 
@@ -26,25 +26,6 @@ const GlobalContextProvider = ({ children }) => {
 
     setEncodedFiles(convertedFiles);
   }
-
-  // async function getResult(b64File) {
-  //   const headers = {
-  //     // Accept: "application/json",
-  //     "Content-Type": "multipart/form-data",
-  //     // "Content-Security-Policy": "upgrade-insecure-requests",
-  //   };
-  //   const formData = new FormData();
-  //   const file = dataURLtoFile(b64File);
-  //   formData.append("data", file, file.name);
-  //   return await axios.post(
-  //     // "http://164.52.218.27:7080/wfpredict/ocr",
-  //     "http://localhost:5000/predict",
-  //     formData,
-  //     {
-  //       headers,
-  //     }
-  //   );
-  // }
 
   async function getResult(b64File) {
     return await axios(what === "receipt" ? API_RECEIPT : API_FORM, {
