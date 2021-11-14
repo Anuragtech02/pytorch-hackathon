@@ -133,7 +133,7 @@ const Upload = ({ history }) => {
   return (
     <div className={styles.container}>
       <Grid container spacing={0} style={{ height: "100%" }}>
-        <Grid item md={9}>
+        <Grid item md={9} sm={12} xs={12}>
           <div className={styles.uploadContainer}>
             <Dropzone
               onDrop={handleDropFiles}
@@ -158,7 +158,7 @@ const Upload = ({ history }) => {
             </Dropzone>
           </div>
         </Grid>
-        <Grid item md={3}>
+        <Grid item md={3} sm={12} xs={12}>
           <aside className={styles.sidebarImages}>
             <header>
               <h3>Document Extraction Tool</h3>
@@ -239,6 +239,16 @@ const Upload = ({ history }) => {
             >
               Continue
             </Button>
+            <IconButton
+              onClick={() => setSampleOpen(false)}
+              className={styles.close}
+            >
+              <img
+                src={closeIcon}
+                alt="close"
+                onClick={() => setSampleOpen(false)}
+              />
+            </IconButton>
           </div>
         </div>
       </Modal>
