@@ -41,6 +41,10 @@
         }
       }
     }
+
+    @media screen and (max-width: 400px) {
+      padding-right: auto;
+    }
   }
 
   .canvasContainer {
